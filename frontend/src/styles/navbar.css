@@ -1,0 +1,395 @@
+.navbar{
+
+    height:72px;
+
+    background: #151a22;
+
+    border-bottom:1px solid var(--border-soft);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 32px;
+
+    flex-shrink:0;
+
+}
+
+.navbar-title{
+
+    font-family: var(--font-display);
+
+    font-size:20px;
+
+    font-weight:600;
+
+    color: var(--text);
+
+}
+
+.navbar-selector{
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+.select-wrapper{
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+.select-wrapper select{
+
+    appearance: none;
+
+    background: var(--surface-hover);
+
+    border: 1px solid var(--border-soft);
+
+    color: var(--text);
+
+    font-family: var(--font-display);
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    padding: 9px 34px 9px 16px;
+
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+
+    transition: border-color .15s ease;
+
+}
+
+.select-wrapper select:hover{
+
+    border-color: var(--ember);
+
+}
+
+.select-wrapper select:focus{
+
+    outline: none;
+
+    border-color: var(--ember);
+
+}
+
+.select-arrow{
+
+    position: absolute;
+
+    right: 12px;
+
+    color: var(--text-muted);
+
+    pointer-events: none;
+
+}
+
+.navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:22px;
+
+}
+
+.server-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color: var(--success);
+
+    font-size:13px;
+
+    font-weight:500;
+
+    background: var(--success-soft);
+
+    padding:7px 14px;
+
+    border-radius: 999px;
+
+}
+
+.server-status-off{
+
+    color: var(--danger);
+
+    background: var(--danger-soft);
+
+}
+
+.server-status-demo{
+
+    color: var(--warning);
+
+    background: var(--warning-soft);
+
+}
+
+.navbar-ayuda{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--text-dim);
+
+    background: transparent;
+
+    padding: 6px;
+
+    border-radius: 8px;
+
+    transition: color .15s ease, background .15s ease;
+
+}
+
+.navbar-ayuda:hover{
+
+    color: var(--ember);
+
+    background: var(--surface-hover);
+
+}
+
+.demo-toggle{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--text-muted);
+
+    background: var(--surface-hover);
+
+    border: 1px solid var(--border-soft);
+
+    padding: 7px 13px;
+
+    border-radius: 999px;
+
+    font-size: 12.5px;
+
+    font-weight: 600;
+
+    transition: all .15s ease;
+
+}
+
+.demo-toggle:hover{
+
+    border-color: var(--warning);
+
+    color: var(--warning);
+
+}
+
+.demo-toggle-activo{
+
+    color: var(--warning);
+
+    background: var(--warning-soft);
+
+    border-color: var(--warning);
+
+}
+
+.navbar-icon{
+
+    color: var(--text-muted);
+
+    cursor:pointer;
+
+    transition:.15s;
+
+}
+
+.navbar-logout{
+
+    display: flex;
+
+    align-items: center;
+
+    background: transparent;
+
+    border: none;
+
+    padding: 4px;
+
+}
+
+.navbar-icon:hover{
+
+    color: var(--ember);
+
+}
+
+.navbar-bell{
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: transparent;
+
+    padding: 4px;
+
+}
+
+.navbar-bell-badge{
+
+    position: absolute;
+
+    top: -2px;
+
+    right: -2px;
+
+    background: var(--danger);
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    min-width: 16px;
+
+    height: 16px;
+
+    border-radius: 999px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0 4px;
+
+    line-height: 1;
+
+}
+
+.navbar-user{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    color: var(--text);
+
+    background: transparent;
+
+    border: none;
+
+    font-family: inherit;
+
+    padding-left:16px;
+
+    border-left:1px solid var(--border-soft);
+
+    cursor: pointer;
+
+}
+
+.navbar-user:hover{
+
+    color: var(--ember);
+
+}
+
+.navbar-menu-btn{
+
+    display: none;
+
+    color: var(--text);
+
+    background: transparent;
+
+    padding: 6px;
+
+    margin-right: 4px;
+
+}
+
+@media (max-width: 860px){
+
+    .navbar{
+
+        padding: 0 16px;
+
+    }
+
+    .navbar-menu-btn{
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+    }
+
+    .navbar-right{
+
+        gap: 12px;
+
+    }
+
+    .server-status span{
+
+        display: none;
+
+    }
+
+    .navbar-user span{
+
+        display: none;
+
+    }
+
+    .select-wrapper select{
+
+        font-size: 14px;
+
+        padding: 8px 28px 8px 12px;
+
+    }
+
+}

@@ -1,0 +1,222 @@
+.tour-overlay{
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 900;
+
+    pointer-events: none;
+
+}
+
+/* Se aplica directamente al elemento real que se está explicando
+   (no a una caja aparte) — así la posición del "agujero" siempre
+   coincide exactamente con el elemento, sin cálculos manuales que
+   se puedan desincronizar con scroll, resize, u otros cambios. */
+
+.tour-resaltado{
+
+    position: relative !important;
+
+    z-index: 950 !important;
+
+    outline: 2px solid var(--ember) !important;
+
+    outline-offset: 8px !important;
+
+    border-radius: 12px !important;
+
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, .72) !important;
+
+    transition: outline-offset .2s ease;
+
+}
+
+.tour-tooltip{
+
+    position: fixed;
+
+    width: 320px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-soft);
+
+    border-radius: var(--radius-lg);
+
+    padding: 20px 20px 16px;
+
+    box-shadow: var(--shadow-card);
+
+    pointer-events: auto;
+
+    transition: top .25s ease, left .25s ease;
+
+    z-index: 901;
+
+}
+
+.tour-cerrar{
+
+    position: absolute;
+
+    top: 12px;
+
+    right: 12px;
+
+    color: var(--text-dim);
+
+    background: transparent;
+
+    padding: 4px;
+
+}
+
+.tour-cerrar:hover{
+
+    color: var(--text);
+
+}
+
+.tour-paso-contador{
+
+    display: block;
+
+    color: var(--ember);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .05em;
+
+    margin-bottom: 8px;
+
+}
+
+.tour-tooltip h4{
+
+    font-family: var(--font-display);
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+
+}
+
+.tour-tooltip p{
+
+    color: var(--text-muted);
+
+    font-size: 13.5px;
+
+    line-height: 1.55;
+
+    margin-bottom: 18px;
+
+}
+
+.tour-botones{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+}
+
+.tour-botones-nav{
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+.tour-btn-saltar{
+
+    color: var(--text-dim);
+
+    background: transparent;
+
+    font-size: 12.5px;
+
+    font-weight: 600;
+
+    padding: 8px 4px;
+
+}
+
+.tour-btn-saltar:hover{
+
+    color: var(--text-muted);
+
+}
+
+.tour-btn-anterior{
+
+    color: var(--text);
+
+    background: var(--surface-hover);
+
+    border: 1px solid var(--border-soft);
+
+    padding: 9px 14px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+.tour-btn-anterior:hover{
+
+    filter: brightness(1.1);
+
+}
+
+.tour-btn-siguiente{
+
+    background: var(--ember);
+
+    color: #1a1105;
+
+    border: none;
+
+    padding: 9px 16px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition: filter .15s ease;
+
+}
+
+.tour-btn-siguiente:hover{
+
+    filter: brightness(1.08);
+
+}
+
+@media (max-width: 480px){
+
+    .tour-tooltip{
+        width: calc(100vw - 32px);
+    }
+
+}

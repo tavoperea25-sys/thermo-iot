@@ -1,0 +1,83 @@
+.error-boundary{
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 32px;
+
+    background: var(--bg);
+
+}
+
+.error-boundary-icono{
+
+    color: var(--danger);
+
+    margin-bottom: 16px;
+
+}
+
+.error-boundary h1{
+
+    font-family: var(--font-display);
+
+    color: var(--text);
+
+    font-size: 24px;
+
+    font-weight: 600;
+
+    margin-bottom: 10px;
+
+}
+
+.error-boundary p{
+
+    color: var(--text-muted);
+
+    font-size: 14px;
+
+    max-width: 420px;
+
+    line-height: 1.6;
+
+    margin-bottom: 26px;
+
+}
+
+.error-boundary button{
+
+    background: var(--ember);
+
+    color: #1a1105;
+
+    border: none;
+
+    border-radius: var(--radius-sm);
+
+    padding: 12px 26px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition: filter .15s ease, transform .15s ease;
+
+}
+
+.error-boundary button:hover{
+
+    filter: brightness(1.08);
+
+    transform: translateY(-1px);
+
+}

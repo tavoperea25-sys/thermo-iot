@@ -1,0 +1,53 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: thermo_iot
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # El propio schema.sql que ya usas a mano se monta como
+      # script de inicialización — MySQL lo corre automáticamente
+      # la primera vez que el contenedor arranca con el volumen
+      # vacío. Si vuelves a levantar el proyecto después, no se
+      # vuelve a correr (tus datos persisten en el volumen).
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: thermo_iot
+      JWT_SECRET: ${JWT_SECRET}
+      DEVICE_API_KEY: ${DEVICE_API_KEY}
+      RETENCION_DIAS_MEDICIONES: ${RETENCION_DIAS_MEDICIONES:-30}
+      RETENCION_DIAS_EVENTOS: ${RETENCION_DIAS_EVENTOS:-90}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+
+volumes:
+  mysql_data:

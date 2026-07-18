@@ -1,0 +1,73 @@
+.alarmas-panel{
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-soft);
+
+    border-radius: var(--radius-lg);
+
+    padding: 6px 22px;
+
+    box-shadow: var(--shadow-card);
+
+}
+
+.alarma-item{
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid var(--border-soft);
+
+}
+
+.alarma-item:last-child{
+
+    border-bottom: none;
+
+}
+
+.alarma-icono{
+
+    color: var(--danger);
+
+    margin-top: 2px;
+
+    flex-shrink: 0;
+
+}
+
+.alarma-info{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+.alarma-fecha{
+
+    color: var(--text-dim);
+
+    font-family: var(--font-mono);
+
+    font-size: 12px;
+
+}
+
+.alarma-motivo{
+
+    color: var(--text);
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+}

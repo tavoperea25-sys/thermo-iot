@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermo-IoT | Login</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+
+    <div class="glow glow1"></div>
+    <div class="glow glow2"></div>
+
+    <div class="floating-card card1">
+        🟢 Sistema Online
+    </div>
+
+    <div class="container">
+
+        <!-- PANEL IZQUIERDO -->
+        <div class="left-panel">
+
+            <div class="logo-circle">
+                <i class="fa-solid fa-temperature-half"></i>
+            </div>
+
+            <h1>THERMO-IOT</h1>
+
+            <h2>Sistema Inteligente de Incubadoras IoT</h2>
+
+            <p>
+                Plataforma profesional para el monitoreo y control remoto
+                de temperatura mediante ESP32 y tecnología IoT.
+            </p>
+
+            <div class="features">
+
+                <div class="feature">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div>
+                        <h3>Monitoreo en tiempo real</h3>
+                        <span>Visualiza temperatura y humedad al instante.</span>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <i class="fa-solid fa-microchip"></i>
+                    <div>
+                        <h3>Control mediante ESP32</h3>
+                        <span>Comunicación bidireccional y automatización.</span>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <i class="fa-solid fa-bell"></i>
+                    <div>
+                        <h3>Alertas inteligentes</h3>
+                        <span>Notificaciones automáticas del sistema.</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- LOGIN -->
+        <div class="login-box">
+
+            <div class="login-icon">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+
+            <h2>Bienvenido</h2>
+
+            <p>Inicia sesión para acceder a Thermo-IoT</p>
+
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="correo" placeholder="Correo electrónico">
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Contraseña">
+            </div>
+
+            <button onclick="login()">
+                INICIAR SESIÓN
+            </button>
+
+            <div class="security-text">
+                <i class="fa-solid fa-shield-halved"></i>
+                Plataforma segura y cifrada
+            </div>
+
+            <br>
+
+            <div style="text-align:center; margin-top:20px;">
+                ¿No tienes cuenta?
+                <a href="register.html" style="color:#00d4ff;">
+                    Crear cuenta
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        async function login() {
+
+            const correo = document.getElementById("correo").value;
+            const password = document.getElementById("password").value;
+
+            if (!correo || !password) {
+                alert("Por favor completa todos los campos.");
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:3000/api/auth/login",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            correo,
+                            password
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    localStorage.setItem(
+                        "token",
+                        data.token
+                    );
+
+                    localStorage.setItem(
+                        "usuario",
+                        JSON.stringify(data.usuario)
+                    );
+
+                    window.location.href = "dashboard.html";
+
+                } else {
+
+                    alert(data.mensaje);
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert("No se pudo conectar con el servidor.");
+
+            }
+        }
+    </script>
+
+</body>
+</html>

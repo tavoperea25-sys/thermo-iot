@@ -1,0 +1,145 @@
+:root{
+
+    /* ---- superficies ---- */
+    --bg: #12151c;
+    --surface: #1a2029;
+    --surface-hover: #212838;
+    --border: #2a3242;
+    --border-soft: #232a38;
+
+    /* ---- texto ---- */
+    --text: #eef1f6;
+    --text-muted: #8d96aa;
+    --text-dim: #5b6478;
+
+    /* ---- acento de marca / temperatura ---- */
+    --ember: #f2924a;
+    --ember-strong: #e07b2e;
+    --ember-soft: rgba(242, 146, 74, .14);
+
+    /* ---- acento humedad ---- */
+    --cyan: #45d8c8;
+    --cyan-soft: rgba(69, 216, 200, .14);
+
+    /* ---- estados ---- */
+    --success: #34d399;
+    --success-soft: rgba(52, 211, 153, .14);
+    --danger: #f0596b;
+    --danger-soft: rgba(240, 89, 107, .14);
+    --warning: #facc15;
+    --warning-soft: rgba(250, 204, 21, .14);
+
+    /* ---- tipografía ---- */
+    --font-display: "Space Grotesk", "Manrope", sans-serif;
+    --font-body: "Manrope", "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+    /* ---- forma ---- */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+
+    --shadow-card: 0 12px 30px rgba(0,0,0,.35);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    color-scheme: dark;
+}
+
+body{
+
+    font-family: var(--font-body);
+
+    background: var(--bg);
+    color: var(--text);
+
+    -webkit-font-smoothing: antialiased;
+
+}
+
+h1, h2, h3{
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+button{
+    cursor:pointer;
+    font-family: var(--font-body);
+}
+
+ul{
+    list-style:none;
+}
+
+::selection{
+    background: var(--ember-soft);
+    color: var(--text);
+}
+
+/* ---- utilidades compartidas entre páginas ---- */
+
+.page-title{
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.page-subtitle{
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 6px 0 28px;
+}
+
+.panel{
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+}
+
+.empty-state{
+    color: var(--text-dim);
+    padding: 32px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+:focus-visible{
+    outline: 2px solid var(--ember);
+    outline-offset: 2px;
+}
+
+.spin{
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+}
+
+.cargando-pagina{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 300px;
+
+    color: var(--text-dim);
+
+}

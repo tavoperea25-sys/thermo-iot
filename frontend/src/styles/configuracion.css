@@ -1,0 +1,161 @@
+.config-panel{
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-soft);
+
+    border-radius: var(--radius-lg);
+
+    padding: 26px;
+
+    max-width: 660px;
+
+    box-shadow: var(--shadow-card);
+
+}
+
+.config-grid{
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 26px;
+
+}
+
+@media (max-width: 640px){
+
+    .config-grid{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+.config-campo{
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.config-campo label{
+
+    color: var(--text-muted);
+
+    font-size: 12.5px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .04em;
+
+    margin-bottom: 8px;
+
+}
+
+.config-campo input{
+
+    background: var(--bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-sm);
+
+    padding: 11px 13px;
+
+    color: var(--text);
+
+    font-family: var(--font-mono);
+
+    font-size: 14px;
+
+    transition: border-color .15s ease;
+
+}
+
+.config-campo input:focus{
+
+    outline: none;
+
+    border-color: var(--ember);
+
+}
+
+.config-panel button{
+
+    background: var(--ember);
+
+    color: #1a1105;
+
+    border: none;
+
+    border-radius: var(--radius-sm);
+
+    padding: 12px 26px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition: filter .15s ease, transform .15s ease;
+
+}
+
+.config-panel button:hover{
+
+    filter: brightness(1.08);
+
+    transform: translateY(-1px);
+
+}
+
+.config-panel button:disabled{
+
+    opacity: .6;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+}
+
+.config-mensaje-exito{
+
+    background: var(--success-soft);
+
+    border: 1px solid var(--success);
+
+    color: var(--success);
+
+    padding: 11px 14px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+
+}
+
+.config-mensaje-error{
+
+    background: var(--danger-soft);
+
+    border: 1px solid var(--danger);
+
+    color: var(--danger);
+
+    padding: 11px 14px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+
+}

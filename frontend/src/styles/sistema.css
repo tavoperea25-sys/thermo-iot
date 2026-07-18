@@ -1,0 +1,127 @@
+.sistema-panel{
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-soft);
+
+    border-radius: var(--radius-lg);
+
+    padding: 26px;
+
+    max-width: 520px;
+
+    box-shadow: var(--shadow-card);
+
+}
+
+.sistema-fila{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid var(--border-soft);
+
+    color: var(--text);
+
+    font-size: 14px;
+
+}
+
+.sistema-fila:last-of-type{
+
+    border-bottom: none;
+
+}
+
+.sistema-badge{
+
+    padding: 5px 14px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .02em;
+
+}
+
+.sistema-online{
+
+    background: var(--success-soft);
+
+    color: var(--success);
+
+}
+
+.sistema-offline{
+
+    background: var(--danger-soft);
+
+    color: var(--danger);
+
+}
+
+.sistema-nota{
+
+    color: var(--text-dim);
+
+    font-size: 12.5px;
+
+    margin-top: 18px;
+
+    line-height: 1.5;
+
+}
+
+.sistema-panel-purga{
+
+    margin-top: 20px;
+
+}
+
+.sistema-nota-purga{
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+}
+
+.sistema-btn-purgar{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--danger);
+
+    background: var(--danger-soft);
+
+    border: 1px solid rgba(240, 89, 107, .3);
+
+    padding: 10px 16px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: filter .15s ease;
+
+}
+
+.sistema-btn-purgar:hover{
+
+    filter: brightness(1.15);
+
+}
