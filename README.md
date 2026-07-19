@@ -4,6 +4,8 @@
 
 Sistema de monitoreo y control remoto para una incubadora, compuesto por tres partes: un firmware para ESP32 que lee sensores y controla actuadores, un backend en Node.js/Express que centraliza los datos, y un frontend en React que sirve como panel de control.
 
+> ¿Quieres ver cómo llegó el proyecto hasta acá — qué bugs reales se encontraron probando con hardware físico y cómo se resolvieron? Revisa el [`CHANGELOG.md`](./CHANGELOG.md).
+
 ## Índice
 
 - [Arquitectura](#arquitectura)
