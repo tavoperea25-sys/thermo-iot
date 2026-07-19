@@ -1,5 +1,7 @@
 # Thermo-IoT
 
+[![Pruebas](https://github.com/tavoperea25-sys/thermo-iot/actions/workflows/tests.yml/badge.svg)](https://github.com/tavoperea25-sys/thermo-iot/actions/workflows/tests.yml)
+
 Sistema de monitoreo y control remoto para una incubadora, compuesto por tres partes: un firmware para ESP32 que lee sensores y controla actuadores, un backend en Node.js/Express que centraliza los datos, y un frontend en React que sirve como panel de control.
 
 ## Índice
@@ -264,12 +266,7 @@ Abre `http://localhost:5173`. Regístrate desde la pantalla de login y crea tu p
 
 El backend tiene 25 pruebas automatizadas (Jest + Supertest) que cubren los flujos críticos: registro, login, límite de intentos, rutas protegidas por sesión de usuario, rutas protegidas por llave de dispositivo, creación de incubadoras con generación automática de configuración, y la cola de comandos manuales/automáticos.
 
-**Corren solas en cada `push`**, gracias al workflow de GitHub Actions en `.github/workflows/tests.yml` — no dependen de que nadie se acuerde de correr `npm test` a mano. Ese mismo workflow también verifica que el frontend compile sin errores (`npm run build`). Si subes este proyecto a GitHub, vas a ver una palomita ✅ o una X ❌ junto a cada commit, y puedes agregar una insignia de estado al inicio de este README así:
-```markdown
-![Pruebas](https://github.com/TU_USUARIO/TU_REPOSITORIO/actions/workflows/tests.yml/badge.svg)
-```
-(reemplaza `TU_USUARIO/TU_REPOSITORIO` por los tuyos reales una vez lo subas)
-
+**Corren solas en cada `push`**, gracias al workflow de GitHub Actions en `.github/workflows/tests.yml` — no dependen de que nadie se acuerde de correr `npm test` a mano. Ese mismo workflow también verifica que el frontend compile sin errores (`npm run build`). El estado se ve en la insignia al inicio de este README, y en la pestaña ["Actions"](https://github.com/tavoperea25-sys/thermo-iot/actions) del repositorio.
 Corren contra una base de datos separada (`thermo_iot_test`), para no tocar nunca tus datos reales de desarrollo.
 
 **Preparación (una sola vez):**
