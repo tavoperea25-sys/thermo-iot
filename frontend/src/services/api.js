@@ -2,9 +2,27 @@ import axios from "axios";
 
 import { obtenerToken, cerrarSesion } from "./auth";
 
+// La URL del backend se arma de dos formas posibles:
+//
+// 1. Si defines VITE_API_URL (en un .env dentro de frontend/), se
+//    usa esa, tal cual — pensado para cuando el sitio se despliegue
+//    en un servidor real, con un dominio o IP fija distinto a "el
+//    mismo equipo donde corre el navegador".
+//
+// 2. Si no la defines (el caso normal en desarrollo), se arma sola
+//    usando el mismo host con el que cargaste la página. Así, si
+//    entras desde tu PC como "localhost:5173", las peticiones van a
+//    "localhost:3000"; si entras desde tu celular como
+//    "192.168.1.50:5173" (misma red WiFi), van solas a
+//    "192.168.1.50:3000" — sin tener que configurar nada a mano.
+
+const apiBaseUrl =
+    import.meta.env.VITE_API_URL ||
+    `http://${window.location.hostname}:3000/api`;
+
 const api = axios.create({
 
-    baseURL: "http://localhost:3000/api"
+    baseURL: apiBaseUrl
 
 });
 

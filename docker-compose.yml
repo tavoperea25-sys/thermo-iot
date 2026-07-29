@@ -46,6 +46,15 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    environment:
+      # Vacía en el uso normal (el sitio calcula la URL del backend
+      # solo). Solo se completa temporalmente al usar un túnel para
+      # una demo remota — ver la sección correspondiente del README.
+      VITE_API_URL: ${VITE_API_URL:-}
+      # Dirección real del backend DENTRO de la red de Docker (no
+      # una URL pública) — la usa el proxy interno de Vite para
+      # redirigir "/api/..." sin que el navegador la vea.
+      VITE_BACKEND_INTERNAL_URL: http://backend:3000
     ports:
       - "5173:5173"
 

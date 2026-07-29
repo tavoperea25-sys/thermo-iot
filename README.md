@@ -17,6 +17,7 @@ Sistema de monitoreo y control remoto para una incubadora, compuesto por tres pa
   - [2. Backend](#2-backend)
   - [3. Frontend](#3-frontend)
   - [4. Firmware ESP32](#4-firmware-esp32)
+- [Compartir el sitio con alguien en otra red (demo remota)](#compartir-el-sitio-con-alguien-en-otra-red-demo-remota)
 - [Variables de entorno](#variables-de-entorno)
 - [Modelo de datos](#modelo-de-datos)
 - [API — endpoints principales](#api--endpoints-principales)
@@ -144,6 +145,7 @@ Unblock-File -Path .\start.sh
 - Sitio web: `http://localhost:5173`
 - API: `http://localhost:3000`
 - MySQL queda expuesto en el puerto `3307` (no el 3306 por defecto — se cambió para no chocar con una instalación local de MySQL fuera de Docker) por si quieres conectarte con un cliente externo.
+- **Desde tu celular** (misma red WiFi): usa la IP de tu PC en vez de `localhost`, igual que en la opción manual — por ejemplo `http://192.168.1.50:5173`.
 
 La base de datos se crea automáticamente la primera vez (usa el mismo `schema.sql`). Tus datos quedan en un volumen de Docker — si vuelves a correr `docker compose up`, no se pierden ni se recrean las tablas de nuevo.
 
@@ -211,6 +213,8 @@ npm run dev
 
 Abre `http://localhost:5173`. Regístrate desde la pantalla de login y crea tu primera incubadora.
 
+**Para entrar desde tu celular** (conectado a la misma red WiFi que tu PC): en vez de `localhost`, usa la IP de tu PC en esa red — por ejemplo `http://192.168.1.50:5173`. La URL del backend se calcula sola en base a eso, no hay que configurar nada más. Si no conecta, revisa el Firewall de Windows: la primera vez que corres `npm run dev`, puede preguntarte si permites el acceso a redes públicas/privadas — dile que sí, o revisa que el puerto 5173 (y el 3000, del backend) no estén bloqueados.
+
 ### 4. Firmware ESP32
 
 1. Cablea el DHT22: `VCC → 3.3V`, `GND → GND`, `DATA → GPIO 15` (resistencia pull-up de 10kΩ si tu módulo no la trae).
@@ -218,6 +222,69 @@ Abre `http://localhost:5173`. Regístrate desde la pantalla de login y crea tu p
 3. El `DEVICE_ID` debe coincidir exactamente con el `esp32_id` que registres en "Incubadoras" en la web.
 4. El `DEVICE_API_KEY` debe coincidir exactamente con `DEVICE_API_KEY` en el `.env` del backend.
 5. Abre `Proyecto_ESP32_IoT_Temperatura_prueba2.ino` en Arduino IDE, instala las librerías `DHT sensor library` (Adafruit) y `ArduinoJson`, selecciona tu placa y puerto, y sube.
+
+## Compartir el sitio con alguien en otra red (demo remota)
+
+Para que alguien en una red completamente distinta a la tuya (por ejemplo, un profesor entrando desde su casa durante tu sustentación) pueda ver el sitio con tu ESP32 real mandando datos en vivo, necesitas "exponer" temporalmente tu sitio a internet con un túnel.
+
+**Solo necesitas exponer un puerto (el 5173, el frontend)** — el frontend redirige internamente las peticiones a la API hacia el backend, así que el backend no necesita su propio túnel. Esto es importante porque los planes gratuitos de estos servicios suelen limitarte a un solo túnel activo a la vez.
+
+**1. Instala una herramienta de túnel** (cualquiera de las dos funciona; usa la que sí te conecte — algunas redes bloquean una y no la otra):
+
+- **ngrok** (la que terminamos usando, tras que Cloudflare no lograra conectar en esta red particular):
+  ```powershell
+  winget install Ngrok.Ngrok
+  ```
+  Crea una cuenta gratis en [ngrok.com](https://ngrok.com), copia tu authtoken desde el panel, y regístralo una sola vez:
+  ```powershell
+  ngrok config add-authtoken TU_TOKEN_AQUI
+  ```
+
+- **Cloudflare Tunnel** (alternativa, no requiere cuenta):
+  ```powershell
+  winget install --id Cloudflare.cloudflared
+  ```
+
+(Después de instalar cualquiera de las dos: **cierra la terminal/VS Code por completo y vuelve a abrirlo**, si no, no va a reconocer el comando.)
+
+**2. Ten el proyecto corriendo como siempre** (`docker compose up -d`, o `npm run dev` en backend y frontend por separado).
+
+**3. Expón el frontend** (**ojo:** el puerto 5173, no el 3000):
+
+- Con ngrok:
+  ```powershell
+  ngrok http 5173
+  ```
+- Con Cloudflare:
+  ```powershell
+  cloudflared tunnel --url http://localhost:5173
+  ```
+
+Vas a ver una URL pública — con ngrok se ve como `https://algo-al-azar.ngrok-free.dev`, con Cloudflare como `https://algo-al-azar.trycloudflare.com`. **Esa es la que compartes** con quien quieras que entre al sitio.
+
+**4. Dile al frontend que use el proxy interno en vez de conectarse directo al backend:**
+
+- **Si corres manualmente**: crea o edita `frontend/.env`:
+  ```
+  VITE_API_URL=/api
+  ```
+  y reinicia el frontend (`Ctrl+C` y `npm run dev` de nuevo).
+
+- **Si corres con Docker Compose**: edita el `.env` de la **raíz** del proyecto y agrega:
+  ```
+  VITE_API_URL=/api
+  ```
+  Luego reinicia solo el frontend:
+  ```bash
+  docker compose up -d frontend
+  ```
+  (`VITE_BACKEND_INTERNAL_URL` ya está configurada automáticamente en `docker-compose.yml` para este caso — no hay que tocarla)
+
+**Notas importantes:**
+- Las URLs son temporales — cambian cada vez que vuelves a correr el comando. Está pensado para una sesión puntual (como tu sustentación), no para dejarlo corriendo permanentemente.
+- Necesitas la terminal del túnel abierta durante toda la demo, además de las de tu backend/frontend.
+- Si tu red bloquea una herramienta (nos pasó con Cloudflare — el protocolo que usa por dentro, QUIC, chocó con la red), prueba con la otra.
+- Verificado en vivo: se probó pidiendo la misma ruta protegida por las dos vías (directo al backend, y a través del proxy del frontend) y devolvieron exactamente la misma respuesta — confirma que el redireccionamiento sí llega al backend real.
 
 ## Variables de entorno
 
@@ -230,6 +297,12 @@ Abre `http://localhost:5173`. Regístrate desde la pantalla de login y crea tu p
 | `DEVICE_API_KEY` | Llave compartida que valida las peticiones del ESP32 |
 | `RETENCION_DIAS_MEDICIONES`, `RETENCION_DIAS_EVENTOS` | Días que se conservan antes de purgarse automáticamente (opcionales, por defecto 30 y 90) |
 | `PORT` | Puerto del servidor (por defecto 3000) |
+
+**Frontend (`.env`, opcional)**
+
+| Variable | Descripción |
+|---|---|
+| `VITE_API_URL` | Solo si el backend vive en una dirección distinta a "el mismo equipo, puerto 3000" (ej. desplegado en un servidor real). Sin esto, la URL se calcula sola según cómo entraste al sitio — funciona igual en tu PC y desde el celular en la misma red. |
 
 **Firmware (`config_secrets.h`)**
 
