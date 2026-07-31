@@ -41,7 +41,7 @@ export const IncubadoraProvider = ({ children }) => {
 
                 }
 
-            } catch (error) {
+            } catch {
 
                 // Si falla, seguimos con el ESP32_ID por defecto.
 
@@ -81,4 +81,5 @@ export const IncubadoraProvider = ({ children }) => {
 
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useIncubadora = () => useContext(IncubadoraContext);

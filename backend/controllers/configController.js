@@ -2,8 +2,6 @@
 // CONFIG CONTROLLER
 //====================================
 
-const db = require("../config/db");
-
 const configService = require("../services/configService");
 const { manejarErrorServidor } = require("../utils/errores");
 

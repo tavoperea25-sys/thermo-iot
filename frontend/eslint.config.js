@@ -18,4 +18,21 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // Los archivos de prueba usan describe/test/expect/vi como
+    // globales (vitest.config -> test.globals: true), igual que
+    // ya hacen los tests de Jest del backend.
+    files: ['**/*.test.{js,jsx}'],
+    languageOptions: {
+      globals: globals.vitest,
+    },
+  },
+  {
+    // vite.config.js corre en Node (durante el build), no en el
+    // navegador — usa process.env, que no existe en globals.browser.
+    files: ['vite.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])

@@ -45,7 +45,7 @@ const Configuracion = () => {
                     tiempo_lectura: respuesta.data.tiempo_lectura
                 });
 
-            } catch (err) {
+            } catch {
 
                 setError("No se pudo cargar la configuración actual");
 
@@ -95,7 +95,7 @@ const Configuracion = () => {
 
             setMensaje("Configuración actualizada. El ESP32 la tomará en su próxima consulta (máx. 5s).");
 
-        } catch (err) {
+        } catch {
 
             setError("No se pudo guardar la configuración");
 

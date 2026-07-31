@@ -37,7 +37,7 @@ const Sistema = () => {
                 setEstado(respuesta.data);
                 setError("");
 
-            } catch (err) {
+            } catch {
 
                 setError("No se pudo consultar el estado del sistema");
 
@@ -81,7 +81,7 @@ const Sistema = () => {
 
             setConfirmarPurga(false);
 
-        } catch (err) {
+        } catch {
 
             toast.error("No se pudo completar la purga.");
 

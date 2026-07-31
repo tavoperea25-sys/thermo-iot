@@ -20,7 +20,7 @@ function verificarToken(req, res, next) {
 
         next();
 
-    } catch (error) {
+    } catch {
 
         return res.status(401).json({
             mensaje: "Token inválido o expirado"

@@ -2,8 +2,6 @@
 // COMANDOS CONTROLLER
 //====================================
 
-const db = require("../config/db");
-
 const comandoService = require("../services/comandoService");
 const { manejarErrorServidor } = require("../utils/errores");
 

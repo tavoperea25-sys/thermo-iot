@@ -54,4 +54,8 @@ export const ToastProvider = ({ children }) => {
 
 };
 
+// Exportar el hook junto al Provider (en vez de en un archivo aparte)
+// rompe el análisis estático de Fast Refresh, pero es intencional:
+// mantiene el contexto y su hook de acceso en un solo lugar.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => useContext(ToastContext);

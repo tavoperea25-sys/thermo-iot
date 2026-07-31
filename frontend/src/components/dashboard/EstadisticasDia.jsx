@@ -35,7 +35,7 @@ const EstadisticasDia = () => {
                 const respuesta = await api.get(`/iot/estadisticas/${esp32Id}`);
                 setStats(respuesta.data);
 
-            } catch (error) {
+            } catch {
 
                 setStats(null);
 

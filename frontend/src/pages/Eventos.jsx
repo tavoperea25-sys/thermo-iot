@@ -38,7 +38,7 @@ const Eventos = () => {
                 setEventos(respuesta.data);
                 setError("");
 
-            } catch (err) {
+            } catch {
 
                 setError("No se pudieron cargar los eventos");
 
@@ -50,6 +50,10 @@ const Eventos = () => {
 
         };
 
+        // Reactiva el skeleton de carga en cada cambio de filtro/dispositivo,
+        // no solo al montar — por eso va antes de obtenerEventos() y no en
+        // el useState inicial.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCargando(true);
         obtenerEventos();
 

@@ -38,7 +38,7 @@ const Perfil = () => {
                 const respuesta = await api.get("/auth/me");
                 setDatos(respuesta.data);
 
-            } catch (err) {
+            } catch {
 
                 toast.error("No se pudo cargar tu perfil");
 
@@ -79,7 +79,7 @@ const Perfil = () => {
 
             toast.success("Perfil actualizado correctamente");
 
-        } catch (err) {
+        } catch {
 
             toast.error("No se pudo actualizar el perfil");
 

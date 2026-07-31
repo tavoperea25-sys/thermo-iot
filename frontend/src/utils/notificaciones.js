@@ -22,7 +22,7 @@ export function reproducirBeep() {
         oscilador.start();
         oscilador.stop(ctx.currentTime + 0.35);
 
-    } catch (error) {
+    } catch {
 
         // Si el navegador bloquea el audio (sin interacción previa
         // del usuario), simplemente no suena — no es crítico.

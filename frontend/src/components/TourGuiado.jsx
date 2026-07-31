@@ -113,6 +113,46 @@ const TourGuiado = () => {
 
     };
 
+    const calcularPosicionTooltip = (rect) => {
+
+        const margen = 16;
+        const alturaTooltipEstimada = 230;
+
+        const espacioAbajo = window.innerHeight - rect.bottom;
+        const espacioArriba = rect.top;
+
+        let top;
+
+        if (espacioAbajo >= alturaTooltipEstimada) {
+            top = rect.bottom + margen;
+        } else if (espacioArriba >= alturaTooltipEstimada) {
+            top = rect.top - alturaTooltipEstimada - margen;
+        } else {
+            top = (window.innerHeight - alturaTooltipEstimada) / 2;
+        }
+
+        top = Math.min(
+            Math.max(16, top),
+            window.innerHeight - alturaTooltipEstimada - 16
+        );
+
+        const left = Math.min(
+            Math.max(16, rect.left),
+            window.innerWidth - 336
+        );
+
+        return { top, left };
+
+    };
+
+    const terminar = () => {
+
+        limpiarResaltadoAnterior();
+        localStorage.setItem("tour_completado", "1");
+        setActivo(false);
+
+    };
+
     useEffect(() => {
 
         if (!activo) {
@@ -203,46 +243,6 @@ const TourGuiado = () => {
         return () => limpiarResaltadoAnterior();
 
     }, []);
-
-    const calcularPosicionTooltip = (rect) => {
-
-        const margen = 16;
-        const alturaTooltipEstimada = 230;
-
-        const espacioAbajo = window.innerHeight - rect.bottom;
-        const espacioArriba = rect.top;
-
-        let top;
-
-        if (espacioAbajo >= alturaTooltipEstimada) {
-            top = rect.bottom + margen;
-        } else if (espacioArriba >= alturaTooltipEstimada) {
-            top = rect.top - alturaTooltipEstimada - margen;
-        } else {
-            top = (window.innerHeight - alturaTooltipEstimada) / 2;
-        }
-
-        top = Math.min(
-            Math.max(16, top),
-            window.innerHeight - alturaTooltipEstimada - 16
-        );
-
-        const left = Math.min(
-            Math.max(16, rect.left),
-            window.innerWidth - 336
-        );
-
-        return { top, left };
-
-    };
-
-    const terminar = () => {
-
-        limpiarResaltadoAnterior();
-        localStorage.setItem("tour_completado", "1");
-        setActivo(false);
-
-    };
 
     const siguiente = () => {
 

@@ -2,8 +2,6 @@
 // EVENTOS CONTROLLER
 //====================================
 
-const db = require("../config/db");
-
 const eventoService = require("../services/eventoService");
 const { manejarErrorServidor } = require("../utils/errores");
 

@@ -45,7 +45,7 @@ const ControlPanel = () => {
             const respuesta = await api.get(`/iot/status/${esp32Id}`);
             setEstado(respuesta.data);
 
-        } catch (err) {
+        } catch {
 
             // Si falla, dejamos el último estado conocido en pantalla.
 
@@ -57,6 +57,9 @@ const ControlPanel = () => {
 
         if (demoActivo) return;
 
+        // Consulta inicial al montar/cambiar de incubadora — patrón
+        // estándar de "fetch on mount", no un bucle de renders.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         consultarEstado();
 
         const intervalo = setInterval(consultarEstado, 5000);
@@ -106,7 +109,7 @@ const ControlPanel = () => {
 
             toast.success(mensajeComando(comando, valor));
 
-        } catch (err) {
+        } catch {
 
             toast.error("No se pudo enviar el comando. Verifica la conexión.");
 

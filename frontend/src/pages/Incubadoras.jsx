@@ -39,7 +39,7 @@ const Incubadoras = () => {
             setIncubadoras(respuesta.data);
             setError("");
 
-        } catch (err) {
+        } catch {
 
             setError("No se pudieron cargar las incubadoras");
 
@@ -52,6 +52,9 @@ const Incubadoras = () => {
     };
 
     useEffect(() => {
+        // Carga inicial de la lista al montar — patrón estándar de
+        // "fetch on mount", no un bucle de renders en cascada.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         cargarIncubadoras();
     }, []);
 
@@ -83,7 +86,7 @@ const Incubadoras = () => {
 
             await cargarIncubadoras();
 
-        } catch (err) {
+        } catch {
 
             toast.error("No se pudo crear la incubadora");
 
@@ -111,7 +114,7 @@ const Incubadoras = () => {
 
             await cargarIncubadoras();
 
-        } catch (err) {
+        } catch {
 
             toast.error("No se pudo eliminar la incubadora");
 

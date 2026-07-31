@@ -43,6 +43,10 @@ jobs:
         working-directory: backend
         run: npm ci
 
+      - name: Lint del backend
+        working-directory: backend
+        run: npm run lint
+
       - name: Cargar la estructura de la base de datos de pruebas
         run: |
           # schema.sql trae su propio CREATE DATABASE/USE thermo_iot,
@@ -69,7 +73,7 @@ jobs:
         working-directory: backend
         run: npm test
 
-  frontend-build:
+  frontend-checks:
 
     runs-on: ubuntu-latest
 
@@ -88,6 +92,14 @@ jobs:
       - name: Instalar dependencias del frontend
         working-directory: frontend
         run: npm ci
+
+      - name: Lint del frontend
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Correr las pruebas automatizadas del frontend
+        working-directory: frontend
+        run: npm test
 
       - name: Verificar que el frontend compile sin errores
         working-directory: frontend

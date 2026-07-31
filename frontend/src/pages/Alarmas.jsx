@@ -81,7 +81,7 @@ const Alarmas = () => {
                 setAlarmas(detectadas);
                 setError("");
 
-            } catch (err) {
+            } catch {
 
                 setError("No se pudieron cargar las alarmas");
 

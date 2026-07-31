@@ -25,7 +25,7 @@ function verificarDispositivoOUsuario(req, res, next) {
 
             return next();
 
-        } catch (error) {
+        } catch {
 
             // sigue abajo al rechazo genérico
 

@@ -52,7 +52,7 @@ const useDashboard = (activo = true) => {
                 const response = await api.get(`/iot/online-status/${esp32Id}`);
                 setOnline(Boolean(response.data.online));
 
-            } catch (error) {
+            } catch {
 
                 setOnline(false);
 
@@ -67,7 +67,7 @@ const useDashboard = (activo = true) => {
                 const response = await api.get(`/iot/configuracion/${esp32Id}`);
                 setLimites(response.data);
 
-            } catch (error) {
+            } catch {
 
                 // Si no hay configuración todavía, simplemente no calculamos alarmas.
 

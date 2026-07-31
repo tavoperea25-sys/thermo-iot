@@ -42,7 +42,7 @@ const Navbar = ({ onAbrirMenu }) => {
                 const respuesta = await api.get(`/iot/online-status/${esp32Id}`);
                 setOnline(Boolean(respuesta.data.online));
 
-            } catch (err) {
+            } catch {
 
                 setOnline(false);
 
@@ -94,7 +94,7 @@ const Navbar = ({ onAbrirMenu }) => {
 
                 setAlarmasActivas(count);
 
-            } catch (err) {
+            } catch {
 
                 setAlarmasActivas(0);
 
@@ -116,7 +116,11 @@ const Navbar = ({ onAbrirMenu }) => {
 
     useEffect(() => {
 
+        // Al activar el modo demo, limpia de inmediato las alarmas
+        // reales que hubiera en pantalla — no es un fetch, es
+        // sincronizar la UI con el cambio de modo.
         if (demoActivo) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setAlarmasActivas(0);
             alarmasAnteriores.current = 0;
         }

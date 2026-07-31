@@ -63,7 +63,7 @@ const useDemoDashboard = (activo = true) => {
                 const respuesta = await api.get(`/iot/configuracion/${esp32Id}`);
                 setLimites(respuesta.data);
 
-            } catch (error) {
+            } catch {
 
                 setLimites(LIMITES_DEFECTO);
 
