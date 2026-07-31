@@ -5,6 +5,7 @@ const db = require("../config/db");
 const verificarDispositivo = require("../middleware/deviceAuthMiddleware");
 const verificarToken = require("../middleware/authMiddleware");
 const verificarDispositivoOUsuario = require("../middleware/deviceOrUserMiddleware");
+const verificarPropietarioIncubadora = require("../middleware/ownershipMiddleware");
 
 const iotController = require("../controllers/iotController");
 const comandosController = require("../controllers/comandosController");
@@ -18,7 +19,12 @@ const { manejarErrorServidor } = require("../utils/errores");
 
 router.get("/history", verificarToken, iotController.obtenerHistorial);
 
-router.post("/command", verificarToken, comandosController.crearComando);
+router.post(
+    "/command",
+    verificarToken,
+    verificarPropietarioIncubadora,
+    comandosController.crearComando
+);
 
 router.get(
     "/command/:esp32_id",
@@ -34,7 +40,7 @@ router.put(
 
 
 
-router.get("/status/:esp32_id", verificarToken, (req, res) => {
+router.get("/status/:esp32_id", verificarToken, verificarPropietarioIncubadora, (req, res) => {
 
     const esp32_id = req.params.esp32_id;
 
@@ -96,21 +102,42 @@ router.get("/status/:esp32_id", verificarToken, (req, res) => {
 
 router.post("/sensor", verificarDispositivo, iotController.guardarSensor);
 
-router.get("/latest/:esp32_id", verificarToken, iotController.obtenerUltimaMedicion);
+router.get(
+    "/latest/:esp32_id",
+    verificarToken,
+    verificarPropietarioIncubadora,
+    iotController.obtenerUltimaMedicion
+);
 
-router.get("/mediciones/:esp32_id", verificarToken, iotController.obtenerMediciones);
+router.get(
+    "/mediciones/:esp32_id",
+    verificarToken,
+    verificarPropietarioIncubadora,
+    iotController.obtenerMediciones
+);
 
 router.post("/heartbeat", verificarDispositivo, heartbeatController.registrarHeartbeat);
 
-router.get("/online-status/:esp32_id", verificarToken, heartbeatController.obtenerEstadoOnline);
+router.get(
+    "/online-status/:esp32_id",
+    verificarToken,
+    verificarPropietarioIncubadora,
+    heartbeatController.obtenerEstadoOnline
+);
 
 router.post("/evento", verificarDispositivo, eventoController.registrarEvento);
 
-router.get("/eventos", verificarToken, eventoController.obtenerEventos);
+router.get(
+    "/eventos",
+    verificarToken,
+    verificarPropietarioIncubadora,
+    eventoController.obtenerEventos
+);
 
 router.get(
     "/estadisticas/:esp32_id",
     verificarToken,
+    verificarPropietarioIncubadora,
     estadisticasController.obtenerEstadisticasHoy
 );
 
@@ -123,6 +150,7 @@ router.post(
 router.get(
     "/configuracion/:esp32_id",
     verificarDispositivoOUsuario,
+    verificarPropietarioIncubadora,
     configController.obtenerConfiguracion
 );
 
@@ -134,6 +162,7 @@ router.get(
 router.put(
     "/configuracion/:esp32_id",
     verificarToken,
+    verificarPropietarioIncubadora,
     configController.actualizarConfiguracion
 );
 

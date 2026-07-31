@@ -16,14 +16,14 @@ const HUMEDAD_MIN_DEFECTO = 50;
 const HUMEDAD_MAX_DEFECTO = 70;
 const TIEMPO_LECTURA_DEFECTO = 3000;
 
-// Obtener todas las incubadoras
+// Obtener las incubadoras del usuario logueado
 router.get("/", (req, res) => {
 
     const sql = `
-        SELECT * FROM incubadoras
+        SELECT * FROM incubadoras WHERE usuario_id = ?
     `;
 
-    db.query(sql, (err, results) => {
+    db.query(sql, [req.usuario.id], (err, results) => {
 
         if (err) {
             return manejarErrorServidor(res, err, "No se pudieron consultar las incubadoras");
@@ -42,9 +42,13 @@ router.post("/", async (req, res) => {
         nombre,
         descripcion,
         esp32_id,
-        temperatura_objetivo,
-        usuario_id
+        temperatura_objetivo
     } = req.body;
+
+    // El dueño siempre es el usuario autenticado — nunca se confía
+    // en un usuario_id que venga del body, o cualquiera podría
+    // registrar una incubadora a nombre de otra persona.
+    const usuario_id = req.usuario.id;
 
     const sql = `
         INSERT INTO incubadoras
@@ -67,7 +71,7 @@ router.post("/", async (req, res) => {
             temperatura_objetivo,
             usuario_id
         ],
-        async (err, result) => {
+        async (err) => {
 
             if (err) {
                 return manejarErrorServidor(res, err, "No se pudo crear la incubadora");
@@ -120,14 +124,14 @@ router.post("/", async (req, res) => {
 
 });
 
-// Eliminar incubadora
+// Eliminar incubadora (solo si es del usuario logueado)
 router.delete("/:id", (req, res) => {
 
     const { id } = req.params;
 
-    const sql = `DELETE FROM incubadoras WHERE id = ?`;
+    const sql = `DELETE FROM incubadoras WHERE id = ? AND usuario_id = ?`;
 
-    db.query(sql, [id], (err, result) => {
+    db.query(sql, [id, req.usuario.id], (err, result) => {
 
         if (err) {
             return manejarErrorServidor(res, err, "No se pudo eliminar la incubadora");

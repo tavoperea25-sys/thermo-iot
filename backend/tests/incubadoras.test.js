@@ -148,6 +148,74 @@ describe("Crear incubadora", () => {
 
 });
 
+describe("Aislamiento entre usuarios", () => {
+
+    const correoOtro = `test_incub_otro_${sufijo}@thermoiot.test`;
+    const usuarioOtro = `test_incub_otro_${sufijo}`;
+
+    let tokenOtroUsuario;
+
+    beforeAll(async () => {
+
+        await request(app).post("/api/auth/register").send({
+            nombre: "Otro Usuario",
+            correo: correoOtro,
+            usuario: usuarioOtro,
+            password: passwordTest
+        });
+
+        const login = await request(app)
+            .post("/api/auth/login")
+            .send({ correo: correoOtro, password: passwordTest });
+
+        tokenOtroUsuario = login.body.token;
+
+    });
+
+    afterAll(async () => {
+
+        await dbDirecta.execute(
+            "DELETE FROM usuarios WHERE correo = ?",
+            [correoOtro]
+        );
+
+    });
+
+    test("un usuario no ve las incubadoras de otro en el listado", async () => {
+
+        const respuesta = await request(app)
+            .get("/api/incubadoras")
+            .set("Authorization", `Bearer ${tokenOtroUsuario}`);
+
+        expect(respuesta.status).toBe(200);
+
+        const encontrada = respuesta.body.find(
+            (item) => item.esp32_id === esp32IdTest
+        );
+
+        expect(encontrada).toBeUndefined();
+
+    });
+
+    test("un usuario no puede eliminar la incubadora de otro", async () => {
+
+        const respuesta = await request(app)
+            .delete(`/api/incubadoras/${incubadoraCreadaId}`)
+            .set("Authorization", `Bearer ${tokenOtroUsuario}`);
+
+        expect(respuesta.status).toBe(404);
+
+        const [filas] = await dbDirecta.execute(
+            "SELECT * FROM incubadoras WHERE id = ?",
+            [incubadoraCreadaId]
+        );
+
+        expect(filas.length).toBe(1);
+
+    });
+
+});
+
 describe("Eliminar incubadora", () => {
 
     test("borra la incubadora creada", async () => {

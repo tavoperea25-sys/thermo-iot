@@ -4,16 +4,30 @@ const mysql = require("mysql2/promise");
 const app = require("../server");
 
 const sufijo = Date.now();
+
+// Dispositivo "suelto", sin incubadora registrada — se usa para las
+// pruebas de llave de dispositivo y para la de "sin configuración".
 const esp32IdTest = `ESP32_TEST_IOT_${sufijo}`;
+
+// Dispositivo CON incubadora registrada a nombre del usuario de
+// prueba — necesario para las pruebas de comandos desde la web,
+// ya que esas rutas ahora exigen que el esp32_id sea del usuario
+// autenticado (ver middleware/ownershipMiddleware.js).
+const esp32IdComandosTest = `ESP32_TEST_IOT_CMD_${sufijo}`;
+
 const llaveCorrecta = process.env.DEVICE_API_KEY;
 
 const correoTest = `test_iot_${sufijo}@thermoiot.test`;
 const usuarioTest = `test_iot_${sufijo}`;
 const passwordTest = "clave123456";
 
+const correoOtroTest = `test_iot_otro_${sufijo}@thermoiot.test`;
+const usuarioOtroTest = `test_iot_otro_${sufijo}`;
+
 let dbDirecta;
 let comandoCreadoId;
 let token;
+let tokenOtroUsuario;
 
 beforeAll(async () => {
 
@@ -41,6 +55,35 @@ beforeAll(async () => {
 
     token = login.body.token;
 
+    // Incubadora del usuario de prueba, dueña de esp32IdComandosTest —
+    // sin esto, las rutas de comandos rechazarían al propio usuario
+    // dueño por no tener ninguna incubadora asociada.
+
+    await request(app)
+        .post("/api/incubadoras")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+            nombre: "Incubadora comandos test",
+            esp32_id: esp32IdComandosTest,
+            temperatura_objetivo: 37
+        });
+
+    // Segundo usuario, sin ninguna incubadora — se usa para probar
+    // que NO puede tocar los dispositivos del primero.
+
+    await request(app).post("/api/auth/register").send({
+        nombre: "Otro Usuario IoT Test",
+        correo: correoOtroTest,
+        usuario: usuarioOtroTest,
+        password: passwordTest
+    });
+
+    const loginOtro = await request(app)
+        .post("/api/auth/login")
+        .send({ correo: correoOtroTest, password: passwordTest });
+
+    tokenOtroUsuario = loginOtro.body.token;
+
 });
 
 afterAll(async () => {
@@ -51,13 +94,23 @@ afterAll(async () => {
     );
 
     await dbDirecta.execute(
-        "DELETE FROM comandos WHERE esp32_id = ?",
-        [esp32IdTest]
+        "DELETE FROM comandos WHERE esp32_id IN (?, ?)",
+        [esp32IdTest, esp32IdComandosTest]
     );
 
     await dbDirecta.execute(
-        "DELETE FROM usuarios WHERE correo = ?",
-        [correoTest]
+        "DELETE FROM configuracion WHERE esp32_id = ?",
+        [esp32IdComandosTest]
+    );
+
+    await dbDirecta.execute(
+        "DELETE FROM incubadoras WHERE esp32_id = ?",
+        [esp32IdComandosTest]
+    );
+
+    await dbDirecta.execute(
+        "DELETE FROM usuarios WHERE correo IN (?, ?)",
+        [correoTest, correoOtroTest]
     );
 
     await dbDirecta.end();
@@ -126,7 +179,7 @@ describe("Flujo de comandos manuales", () => {
             .post("/api/iot/command")
             .set("Authorization", `Bearer ${token}`)
             .send({
-                esp32_id: esp32IdTest,
+                esp32_id: esp32IdComandosTest,
                 comando: "calefactor",
                 valor: "ON"
             });
@@ -134,7 +187,7 @@ describe("Flujo de comandos manuales", () => {
         expect(creado.status).toBe(200);
 
         const pendiente = await request(app)
-            .get(`/api/iot/command/${esp32IdTest}`)
+            .get(`/api/iot/command/${esp32IdComandosTest}`)
             .set("X-Device-Key", llaveCorrecta);
 
         expect(pendiente.status).toBe(200);
@@ -168,16 +221,16 @@ describe("Flujo de comandos manuales", () => {
         await request(app)
             .post("/api/iot/command")
             .set("Authorization", `Bearer ${token}`)
-            .send({ esp32_id: esp32IdTest, comando: "modo", valor: "AUTO_ON" });
+            .send({ esp32_id: esp32IdComandosTest, comando: "modo", valor: "AUTO_ON" });
 
         await request(app)
             .post("/api/iot/command")
             .set("Authorization", `Bearer ${token}`)
-            .send({ esp32_id: esp32IdTest, comando: "modo", valor: "AUTO_OFF" });
+            .send({ esp32_id: esp32IdComandosTest, comando: "modo", valor: "AUTO_OFF" });
 
         const [pendientes] = await dbDirecta.execute(
             "SELECT * FROM comandos WHERE esp32_id = ? AND comando = 'modo' AND ejecutado = FALSE",
-            [esp32IdTest]
+            [esp32IdComandosTest]
         );
 
         // Solo debe quedar UNO pendiente (el más reciente) — el
@@ -210,6 +263,62 @@ describe("Configuración accesible por dispositivo o usuario", () => {
             .set("X-Device-Key", llaveCorrecta);
 
         expect(respuesta.status).toBe(404);
+
+    });
+
+});
+
+describe("Propiedad del dispositivo (autorización entre usuarios)", () => {
+
+    test("un usuario no puede enviar comandos a una incubadora que no es suya", async () => {
+
+        const respuesta = await request(app)
+            .post("/api/iot/command")
+            .set("Authorization", `Bearer ${tokenOtroUsuario}`)
+            .send({
+                esp32_id: esp32IdComandosTest,
+                comando: "calefactor",
+                valor: "ON"
+            });
+
+        expect(respuesta.status).toBe(403);
+
+    });
+
+    test("un usuario no puede leer las mediciones de una incubadora que no es suya", async () => {
+
+        const respuesta = await request(app)
+            .get(`/api/iot/mediciones/${esp32IdComandosTest}`)
+            .set("Authorization", `Bearer ${tokenOtroUsuario}`);
+
+        expect(respuesta.status).toBe(403);
+
+    });
+
+    test("un usuario no puede cambiar la configuración de una incubadora que no es suya", async () => {
+
+        const respuesta = await request(app)
+            .put(`/api/iot/configuracion/${esp32IdComandosTest}`)
+            .set("Authorization", `Bearer ${tokenOtroUsuario}`)
+            .send({
+                temperatura_min: 10,
+                temperatura_max: 15,
+                humedad_min: 10,
+                humedad_max: 15,
+                tiempo_lectura: 1000
+            });
+
+        expect(respuesta.status).toBe(403);
+
+    });
+
+    test("el dueño sí puede consultar sus propias mediciones", async () => {
+
+        const respuesta = await request(app)
+            .get(`/api/iot/mediciones/${esp32IdComandosTest}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(respuesta.status).toBe(200);
 
     });
 
