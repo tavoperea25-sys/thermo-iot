@@ -6,11 +6,20 @@ const jwt = require("jsonwebtoken");
 const verificarToken = require("../middleware/authMiddleware");
 const { loginLimiter, registerLimiter } = require("../middleware/rateLimiter");
 const { manejarErrorServidor } = require("../utils/errores");
+const { validarRegistro } = require("../utils/validacion");
 
 // ================= REGISTRO =================
 router.post("/register", registerLimiter, async (req, res) => {
 
     const { nombre, correo, usuario, password } = req.body;
+
+    const errorValidacion = validarRegistro({ nombre, correo, usuario, password });
+
+    if (errorValidacion) {
+        return res.status(400).json({
+            mensaje: errorValidacion
+        });
+    }
 
     try {
 
@@ -25,7 +34,7 @@ router.post("/register", registerLimiter, async (req, res) => {
         db.query(
             sql,
             [nombre, correo, usuario, hashedPassword],
-            (err, result) => {
+            (err) => {
 
                 if (err) {
                     return manejarErrorServidor(res, err, "No se pudo registrar el usuario");
@@ -48,6 +57,17 @@ router.post("/login", loginLimiter, (req, res) => {
 
     const { correo, password } = req.body;
 
+    // Mismo mensaje genérico sin importar si falla el correo o la
+    // contraseña — así no se puede usar el login para averiguar
+    // qué correos están registrados (enumeración de usuarios).
+    const credencialesInvalidas = () => res.status(401).json({
+        mensaje: "Correo o contraseña incorrectos"
+    });
+
+    if (!correo || !password) {
+        return credencialesInvalidas();
+    }
+
     const sql = `
         SELECT * FROM usuarios
         WHERE correo = ?
@@ -60,9 +80,7 @@ router.post("/login", loginLimiter, (req, res) => {
         }
 
         if (results.length === 0) {
-            return res.status(401).json({
-                mensaje: "Usuario no encontrado"
-            });
+            return credencialesInvalidas();
         }
 
         const usuario = results[0];
@@ -73,9 +91,7 @@ router.post("/login", loginLimiter, (req, res) => {
         );
 
         if (!passwordCorrecta) {
-            return res.status(401).json({
-                mensaje: "Contraseña incorrecta"
-            });
+            return credencialesInvalidas();
         }
 
         const token = jwt.sign(

@@ -74,6 +74,36 @@ describe("POST /api/auth/register", () => {
 
     });
 
+    test("rechaza un correo con formato inválido", async () => {
+
+        const respuesta = await request(app)
+            .post("/api/auth/register")
+            .send({
+                nombre: "Usuario Correo Malo",
+                correo: "esto-no-es-un-correo",
+                usuario: `${usuarioTest}_correo_malo`,
+                password: passwordOriginal
+            });
+
+        expect(respuesta.status).toBe(400);
+
+    });
+
+    test("rechaza una contraseña demasiado corta", async () => {
+
+        const respuesta = await request(app)
+            .post("/api/auth/register")
+            .send({
+                nombre: "Usuario Password Corta",
+                correo: `test_pwcorta_${sufijo}@thermoiot.test`,
+                usuario: `${usuarioTest}_pwcorta`,
+                password: "123"
+            });
+
+        expect(respuesta.status).toBe(400);
+
+    });
+
 });
 
 describe("POST /api/auth/login", () => {
@@ -109,6 +139,20 @@ describe("POST /api/auth/login", () => {
             .send({ correo: "nadie_registrado@thermoiot.test", password: "loquesea" });
 
         expect(respuesta.status).toBe(401);
+
+    });
+
+    test("el mensaje es el mismo para correo inexistente y contraseña incorrecta (sin enumeración)", async () => {
+
+        const correoInexistente = await request(app)
+            .post("/api/auth/login")
+            .send({ correo: "tampoco_existe@thermoiot.test", password: "loquesea" });
+
+        const passwordIncorrecta = await request(app)
+            .post("/api/auth/login")
+            .send({ correo: correoTest, password: "una_password_mala" });
+
+        expect(correoInexistente.body.mensaje).toBe(passwordIncorrecta.body.mensaje);
 
     });
 

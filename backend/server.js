@@ -4,6 +4,7 @@ const iotRoutes = require("./routes/iot");
 const incubadorasRoutes = require("./routes/incubadoras");
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 
 require("./config/db");
 
@@ -11,11 +12,30 @@ const authRoutes = require("./routes/auth");
 
 const app = express();
 
+// Cabeceras de seguridad básicas (X-Content-Type-Options,
+// X-Frame-Options, etc.). Desactivamos CSP por defecto porque el
+// frontend es una app aparte (Vite/React) servida desde otro
+// origen/puerto — no HTML generado por este servidor al que
+// aplicarle una política de contenido.
+app.use(helmet({ contentSecurityPolicy: false }));
+
 // Permitir recibir JSON
 app.use(express.json());
 
-// Permitir peticiones desde el frontend
-app.use(cors());
+// Peticiones desde el frontend. El origen no es fijo a propósito:
+// el mismo sitio se abre desde localhost, desde la IP del PC en la
+// red WiFi (celular) o detrás de un túnel (ngrok/Cloudflare) para
+// demos remotas — ver el README, sección "Compartir el sitio con
+// alguien en otra red". Si defines CORS_ORIGIN (lista separada por
+// comas) en el .env, se restringe a esos orígenes exactos; si no,
+// se refleja el origen de cada petición (equivalente a lo de
+// antes, pero dejando la puerta abierta a restringirlo en
+// producción sin tocar código).
+const origenesPermitidos = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
+    : true;
+
+app.use(cors({ origin: origenesPermitidos }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/incubadoras", incubadorasRoutes);
