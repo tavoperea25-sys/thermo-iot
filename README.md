@@ -61,7 +61,7 @@ Sistema de monitoreo y control remoto para una incubadora, compuesto por tres pa
 ## Estructura del proyecto
 
 ```
-proyecto1/                     # Firmware ESP32 (Arduino)
+Firmware-ESP32/                # Firmware ESP32 (Arduino)
 ├── *.ino / *.cpp / *.h        # Un archivo por responsabilidad (wifi, sensores, api, etc.)
 ├── config_secrets.h           # Credenciales reales — NO se sube a git
 └── config_secrets.example.h   # Plantilla de config_secrets.h
