@@ -31,16 +31,16 @@ Sistema de monitoreo y control remoto para una incubadora, compuesto por tres pa
 ## Arquitectura
 
 ```
-┌─────────────┐        WiFi / HTTP        ┌──────────────────┐        HTTP        ┌─────────────┐
-│  ESP32 +    │ ─────────────────────────▶ │  Backend          │ ◀─────────────────│  Frontend    │
-│  DHT22      │ ◀───────────────────────── │  (Node/Express)   │ ──────────────────▶│  (React)     │
-│  (firmware) │   sensores, comandos,      │                    │   login, dashboard, │  (Vite)      │
-└─────────────┘   configuración, eventos   └────────┬───────────┘   control, config    └─────────────┘
-                                                      │
-                                                      ▼
-                                                 ┌──────────┐
-                                                 │  MySQL   │
-                                                 └──────────┘
+┌─────────────┐        WiFi / HTTP          ┌──────────────────┐        HTTP         ┌────────────┐
+│  ESP32 +    │ ─────────────────────────▶ │     Backend       │ ◀───────────────── │  Frontend  │
+│  DHT22      │ ◀───────────────────────── │  (Node/Express)   │ ──────────────────▶│  (React)   │
+│  (firmware) │   sensores, comandos,      │                    │   login, dashboard,│  (Vite)    │
+└─────────────┘   configuración, eventos   └────────┬───────────┘   control, config  └────────────┘
+                                                    │
+                                                    ▼
+                                               ┌──────────┐
+                                               │  MySQL   │
+                                               └──────────┘
 ```
 
 - El **ESP32** lee temperatura/humedad del DHT22, las envía al backend, consulta su configuración y comandos pendientes, y controla un calefactor (LED) y un ventilador — de forma manual (por comando) o automática (por umbrales, con histéresis).
